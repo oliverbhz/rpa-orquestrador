@@ -9,10 +9,8 @@ import {
   GridIcon,
   HorizontaLDots,
   ListIcon,
-  PageIcon,
   PieChartIcon,
   PlugInIcon,
-  TableIcon,
   UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
@@ -28,7 +26,7 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    path: "/dashboard",
   },
   {
     icon: <CalenderIcon />,
@@ -41,21 +39,35 @@ const navItems: NavItem[] = [
     path: "/profile",
   },
   {
-    name: "Forms",
+    name: "Control",
     icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
     subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "Bots", path: "/control/bots" },
+      { name: "Vdis", path: "/control/vdis" },
+      { name: "Schedules", path: "/control/schedules" },
+      { name: "Queues", path: "/control/queues" },
+    ],
+  },
+  {
+    name: "Analytics",
+    icon: <PieChartIcon />,
+    subItems: [
+      { name: "Logs", path: "/analytics/logs" },
+    ],
+  },
+  {
+    name: "System",
+    icon: <BoxCubeIcon />,
+    subItems: [
+      { name: "Credentials", path: "/system/credentials" },
+    ],
+  },
+  {
+    name: "Tools",
+    icon: <PlugInIcon />,
+    subItems: [
+      { name: "Flower", path: "/tools/flower" },
+      { name: "RabbitMQ", path: "/tools/rabbitmq" },
     ],
   },
 ];
@@ -65,28 +77,28 @@ const othersItems: NavItem[] = [
     icon: <PieChartIcon />,
     name: "Charts",
     subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
+      { name: "Line Chart", path: "/line-chart" },
+      { name: "Bar Chart", path: "/bar-chart" },
     ],
   },
   {
     icon: <BoxCubeIcon />,
     name: "UI Elements",
     subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
+      { name: "Alerts", path: "/alerts" },
+      { name: "Avatar", path: "/avatars" },
+      { name: "Badge", path: "/badge" },
+      { name: "Buttons", path: "/buttons" },
+      { name: "Images", path: "/images" },
+      { name: "Videos", path: "/videos" },
     ],
   },
   {
     icon: <PlugInIcon />,
     name: "Authentication",
     subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
+      { name: "Sign In", path: "/signin" },
+      { name: "Sign Up", path: "/signup" },
     ],
   },
 ];
@@ -99,12 +111,9 @@ const AppSidebar: React.FC = () => {
     type: "main" | "others";
     index: number;
   } | null>(null);
-  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
-  );
+  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({});
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // const isActive = (path: string) => location.pathname === path;
   const isActive = useCallback(
     (path: string) => location.pathname === path,
     [location.pathname]
@@ -330,44 +339,42 @@ const AppSidebar: React.FC = () => {
           )}
         </Link>
       </div>
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
-        <nav className="mb-6">
-          <div className="flex flex-col gap-4">
-            <div>
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
-                ) : (
-                  <HorizontaLDots className="size-6" />
-                )}
-              </h2>
-              {renderMenuItems(navItems, "main")}
-            </div>
-            <div className="">
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </h2>
-              {renderMenuItems(othersItems, "others")}
-            </div>
+      <nav className="mb-6">
+        <div className="flex flex-col gap-4">
+          <div>
+            <h2
+              className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                !isExpanded && !isHovered
+                  ? "lg:justify-center"
+                  : "justify-start"
+              }`}
+            >
+              {isExpanded || isHovered || isMobileOpen ? (
+                "Menu"
+              ) : (
+                <HorizontaLDots className="size-6" />
+              )}
+            </h2>
+            {renderMenuItems(navItems, "main")}
           </div>
-        </nav>
-      </div>
+          <div className="">
+            <h2
+              className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                !isExpanded && !isHovered
+                  ? "lg:justify-center"
+                  : "justify-start"
+              }`}
+            >
+              {isExpanded || isHovered || isMobileOpen ? (
+                "Others"
+              ) : (
+                <HorizontaLDots />
+              )}
+            </h2>
+            {renderMenuItems(othersItems, "others")}
+          </div>
+        </div>
+      </nav>
     </aside>
   );
 };
